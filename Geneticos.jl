@@ -2,6 +2,7 @@ using LinearAlgebra
 using Random
 using StatsBase
 using Distributions
+using Plots
 
 abstract type Genoma end
 abstract type GenomaEntero<:Genoma end
@@ -171,9 +172,9 @@ function calif(pnt)
     #print(n)
     cost = 0;
     for p in 1:n-1
-        cost += _mtz[pnt[p], pnt[p+1]]
+        cost += _mtz1[pnt[p], pnt[p+1]]
     end
-    cost += _mtz[pnt[1], pnt[n]]
+    cost += _mtz1[pnt[1], pnt[n]]
 end
 #p=Poblacion{PMX}(10, 1, 6, calif; seed=1)
 
@@ -197,7 +198,37 @@ end
 ## Lee Datos
 
 data = datos("Data1.txt")
-global const _mtz = data[1]
-algoritmoGenetico(calif, "OX", 40, 10000; intStart=1, intEnd=131, random=5)
 
-algoritmoGenetico(calif, "PMX", 40, 10000; intStart=1, intEnd=131)
+# AGUASSS!!!!!!!!!!!!!!!!!  Lee abajo
+
+## Tienen que cambiar _mtz1 por _mtz2 en la funcion calif para poder correr el
+# set de datos
+# Julia no te deja redefinir globales entonces creamos una por dataset.
+
+### ----------------------  Para data 1 ------------------------
+global const _mtz1 = data[1]
+### ----------------------  Para data 2 ------------------------
+#global const _mtz2 = data[1]
+
+
+
+
+califFinal, genomaFinal = algoritmoGenetico(calif, "OX", 40, 1000; intStart=1, intEnd=floor(Int,length(data[2])/2), random=5)
+califFinal, genomaFinal = algoritmoGenetico(calif, "PMX", 40, 10000; intStart=1, intEnd=131)
+
+## Graficamos problema y sol.
+
+x = data[2][1:floor(Int,length(data[2])/2)]
+y = data[2][floor(Int,length(data[2])/2+1):length(data[2])]
+
+plot(x, y, seriestype = :scatter, title = "Ciudades, costo = "*string( califFinal), size=(1000,1000))
+
+# Construimos ruta
+orden = Array{Tuple{Int, Int}}(undef, length(x))
+for num in 1:length(x)
+    orden[num] = (data[2][genomaFinal[num],1] , data[2][genomaFinal[num],2])
+end
+
+# Ponemos Ruta
+beam = Shape(orden)
+plot!(beam, fillcolor = plot_color(:yellow, 0.3), fillalpha=0.0, alpha=0.2)

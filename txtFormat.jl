@@ -42,7 +42,7 @@ struct datos
         # print("File loaded in ")
         # print((time_ns() - ini )/ 1e9)
         # print(" sec")
-        return dist, startPoint
+        return dist, pos
     end
 end
 
