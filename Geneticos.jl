@@ -198,5 +198,4 @@ end
 
 data = datos("Data1.txt")
 global const _mtz = data[1]
-length(rutaInicial)
 algoritmoGenetico(calif, "OX", 20, length(rutaInicial); intStart=1, intEnd=131)

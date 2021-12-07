@@ -47,20 +47,20 @@ struct datos
 end
 
 
-function costoRuta(dist, pnt)
+function costoRuta(pnt)
     n = length(pnt)
     cost = 0;
     for p in 1:n-1
-        cost += dist[pnt[p], pnt[p+1]]
+        cost += mtz[pnt[p], pnt[p+1]]
     end
-    cost += dist[pnt[1], pnt[n]]
+    cost += mtz[pnt[1], pnt[n]]
 end
 
 # Construimos clase con archivo de datos 1
-data = datos("Data1.txt")
+#data = datos("Data1.txt")
 # Sacamos la mtz de costos y la ruta inicial
-matrizDistancias, rutaInicial = data
-
+#matrizDistancias, rutaInicial = data
+#global const mtz = matrizDistancas
 # Verificamos costos de ruta
-costoRuta(data[1],data[2])
-costoRuta(matrizDistancias,rutaInicial)
+#costoRuta(data[2])
+#costoRuta(rutaInicial)
