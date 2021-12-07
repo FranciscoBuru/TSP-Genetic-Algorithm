@@ -144,13 +144,13 @@ function reproduce(p::Poblacion{T}) where T<:GenomaEntero2Hijos
         c=crossover(s[1], s[2], p.rng, p.funCalif, p.Pm)
         #(p1::OX, p2::OX, rng::MersenneTwister, funCalif::Function, Pm::Float64)
         pob[2*i-1]=c[1]
-        if 2*i<m
+        if 2*i<=m
             pob[2*i]=c[2]
         end
     end
     if p.random>0
-        starter=minimum(pob[1].genoma)
-        ender=maximum(pob[1].genoma)
+        starter=minimum(p.pob[1].genoma)
+        ender=maximum(p.pob[1].genoma)
         for i in 1:p.random
             pob[m+i]=T(starter, ender, p.rng, p.funCalif)
         end
@@ -198,4 +198,6 @@ end
 
 data = datos("Data1.txt")
 global const _mtz = data[1]
-algoritmoGenetico(calif, "OX", 20, length(rutaInicial); intStart=1, intEnd=131)
+algoritmoGenetico(calif, "OX", 40, 10000; intStart=1, intEnd=131, random=5)
+
+algoritmoGenetico(calif, "PMX", 40, 10000; intStart=1, intEnd=131)
