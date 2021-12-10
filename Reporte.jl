@@ -1,3 +1,6 @@
+include("Geneticos.jl")
+include("txtFormat.jl")
+
 function reportePm(tipo, directorio, n_exprimentos, Pm_bajo, Pm_alto, numEval, pobsize, random)
     data=datos(directorio)
     mtz=data.dist
@@ -144,4 +147,5 @@ Pm_alto=0.1
 n_exprimentos_Pm=11
 
 
-res=reporteHeatmap(tipo, directorio, n_exprimentos_pob, pob_bajo, pob_alto, numEval, Pm_bajo, Pm_alto, n_exprimentos_Pm, random)
+res3=reporteHeatmap(tipo, directorio, n_exprimentos_pob, pob_bajo, pob_alto, numEval, Pm_bajo, Pm_alto, n_exprimentos_Pm, random)
+plot(res3[2])
