@@ -98,6 +98,49 @@ function crossover(p1::OX, p2::OX, rng::MersenneTwister, funCalif::Function, Pm:
     return OX(x,funCalif), OX(y,funCalif)
 end
 
+
+# Ini CX
+mutable struct CX<:GenomaEntero2Hijos
+    genoma::Array{Int64}
+    calif::Int64
+    function OX(starter::Int64, ender::Int64, rng::MersenneTwister, funCalif::Function)
+        genoma=shuffle(rng, Vector(starter:ender))
+        calif=funCalif(genoma)
+        new(genoma, calif)
+    end
+    function OX(genoma::Array{Int64}, funCalif::Function)
+        new(genoma, funCalif(genoma))
+    end
+end
+
+function crossover(p1::CX, p2::CX, rng::MersenneTwister, funCalif::Function, Pm::Float64)
+    n=length(p1.genoma)
+    x=copy(p1.genoma); y=copy(p2.genoma)
+
+    # Primer Hijo, sobreescribimos en y
+    y[1] = p1.genoma[1]
+    val = p2.genoma[1]
+    while val != y[1]
+        y[findfirst(x->x==val, p1.genoma)]= val
+        val = p2.genoma[findfirst(x->x==val, p1.genoma)]
+    end
+
+    # Segundo Hijo
+    x[1] = p2.genoma[1]
+    val = p1.genoma[1]
+    while val != x[1]
+        x[findfirst(x->x==val, p2.genoma)]= val
+        val = p1.genoma[findfirst(x->x==val, p2.genoma)]
+    end
+
+    #Mutamos
+    #mutar!(x, Pm, rng); mutar!(y, Pm, rng)
+    return CX(y,funCalif), CX(x,funCalif)
+end
+# Fin CX
+
+
+
 mutable struct GenAleatorio<:GenomaEntero2Hijos
     genoma::Array{Int64}
     calif::Int64
@@ -113,6 +156,7 @@ end
 function crossover(P1::GenAleatorio, p2::GenAleatorio, rng::MersenneTwister, funCalif::Function, Pm::Float64)
     return GenAleatorio(P1.starter, P1.ender, rng,  funCalif), GenAleatorio(P1.starter, P1.ender, rng, funCalif)
 end
+
 
 mutable struct Poblacion{T<:Genoma}
     pob::Array{T} #Poblacion en si
@@ -190,11 +234,14 @@ function algoritmoGenetico(funCalif::Function, tipo, pobsize, generations; Pm=0.
         #Poblacion{T}(n::Int64, starter::Int64, ending::Int64, funCalif::Function; keepbest::Bool=true, random::Int64=2, Pm::Float64=0.05, seed::Int64=1234)
     elseif tipo=="OX"
         pob=Poblacion{OX}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
+    elseif tipo=="CX"
+        pob=Poblacion{CX}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
     end
 
     for i in 2:generations
         #println(i,getbest(pob))
         pob=reproduce(pob)
+        println(i)
     end
     res=getbest(pob)
     return res.calif, res.genoma
