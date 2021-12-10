@@ -98,6 +98,21 @@ function crossover(p1::OX, p2::OX, rng::MersenneTwister, funCalif::Function, Pm:
     return OX(x,funCalif), OX(y,funCalif)
 end
 
+mutable struct GenAleatorio<:GenomaEntero2Hijos
+    genoma::Array{Int64}
+    calif::Int64
+    starter::Int64
+    ender::Int64
+    function GenAleatorio(starter::Int64, ender::Int64, rng::MersenneTwister, funCalif::Function)
+        genoma=shuffle(rng, Vector(starter:ender))
+        calif=funCalif(genoma)
+        new(genoma, calif, starter, ender)
+    end
+end
+
+function crossover(P1::GenAleatorio, p2::GenAleatorio, rng::MersenneTwister, funCalif::Function, Pm::Float64)
+    return GenAleatorio(P1.starter, P1.ender, rng,  funCalif), GenAleatorio(P1.starter, P1.ender, rng, funCalif)
+end
 
 mutable struct Poblacion{T<:Genoma}
     pob::Array{T} #Poblacion en si
@@ -183,4 +198,37 @@ function algoritmoGenetico(funCalif::Function, tipo, pobsize, generations; Pm=0.
     end
     res=getbest(pob)
     return res.calif, res.genoma
+end
+
+
+
+#Forma con mas outputs
+
+
+function algoritmoGeneticoReporte(funCalif::Function, tipo, pobsize, generations; Pm=0.01, intStart=0, intEnd=0, binlen=10, seed=1234, keepbest=true,random=2)
+    if tipo=="PMX"
+        pob=Poblacion{PMX}(pobsize, intStart, intEnd, funCalif)#; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
+        #Poblacion{T}(n::Int64, starter::Int64, ending::Int64, funCalif::Function; keepbest::Bool=true, random::Int64=2, Pm::Float64=0.05, seed::Int64=1234)
+    elseif tipo=="OX"
+        pob=Poblacion{OX}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
+    elseif tipo=="Aleatorio"
+        pob=Poblacion{GenAleatorio}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
+    end
+    f=x->x.calif
+
+    valores=Array{Int64}(undef, generations, pobsize)
+    valores[1,:]=sort(f.(pob.pob))
+    for i in 2:generations
+        #println(i,getbest(pob))
+        pob=reproduce(pob)
+        valores[i,:]=sort(f.(pob.pob))
+    end
+    res=getbest(pob)
+    gen=Vector(1:generations)
+    p=plot(gen, valores; labels="")
+    title!(p, "Progreso con el metodo "* tipo)
+    ylabel!(p, "Puntaje")
+    xlabel!(p, "Generación")
+    plot!(p)
+    return valores[:,1], res.calif, res.genoma
 end

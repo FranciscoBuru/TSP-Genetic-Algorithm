@@ -12,3 +12,9 @@ califFinal, genomaFinal = algoritmoGenetico(calif, "OX", 40, 1000; intStart=1, i
 graficar(data.startPoint, genomaFinal, califFinal)
 
 #califFinal, genomaFinal = algoritmoGenetico(calif, "PMX", 40, 10000; intStart=1, intEnd=131)
+
+p, califFinal, genomaFinal = algoritmoGeneticoReporte(calif, "Aleatorio", 40, 10000; intStart=1, intEnd=floor(Int,length(data.startPoint)/2), random=0)
+println(califFinal)
+plot!()
+gen=Vector(1:10)
+graficar(data.startPoint, genomaFinal, califFinal)
