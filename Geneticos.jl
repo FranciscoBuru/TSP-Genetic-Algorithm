@@ -24,9 +24,9 @@ function corregir!(x::Array{Int64}, y::Array{Int64})
     end
 end
 
-function mutar!(x::Array{Int64}, Pm::Float64)
+function mutar!(x::Array{Int64}, Pm::Float64, rng::MersenneTwister)
     n=length(x)
-    n_mutaciones=rand(Binomial(n,Pm))
+    n_mutaciones=rand(rng, Binomial(n,Pm))
     for i in 1:n_mutaciones
         j=sample(Vector(1:n), 2; replace=false)
         x[j[1]],x[j[2]]=x[j[2]],x[j[1]]
@@ -49,7 +49,7 @@ end
 
 function crossover(p1::PMX, p2::PMX, rng::MersenneTwister, funCalif::Function, Pm::Float64)
     n=length(p1.genoma)
-    i=sample(Vector(1:n), 2; replace=false)
+    i=sample(rng, Vector(1:n), 2; replace=false)
     x=copy(p1.genoma); y=copy(p2.genoma)
     if i[1]<i[2]
         i[1],i[2]=i[2],i[1]
@@ -58,7 +58,7 @@ function crossover(p1::PMX, p2::PMX, rng::MersenneTwister, funCalif::Function, P
     y[i[2]:n],x[i[2]:n]=x[i[2]:n],y[i[2]:n]
     #corregir las cadenas
     corregir!(x,y)
-    mutar!(x, Pm); mutar!(y, Pm)
+    mutar!(rng, x, Pm); mutar!(y, Pm, rng)
     return PMX(x,funCalif), PMX(y,funCalif)
 end
 
@@ -78,7 +78,7 @@ end
 function crossover(p1::OX, p2::OX, rng::MersenneTwister, funCalif::Function, Pm::Float64)
     n=length(p1.genoma)
     x=copy(p1.genoma); y=copy(p2.genoma)
-    i=sample(Vector(1:n), 2; replace=false)
+    i=sample(rng, Vector(1:n), 2; replace=false)
     if i[1]<i[2]
         j=[1:i[1];i[2]:n]
     else
@@ -94,7 +94,7 @@ function crossover(p1::OX, p2::OX, rng::MersenneTwister, funCalif::Function, Pm:
     x[j]=xj
     y[j]=yj
     #Mutamos
-    mutar!(x, Pm); mutar!(y, Pm)
+    mutar!(x, Pm, rng); mutar!(y, Pm, rng)
     return OX(x,funCalif), OX(y,funCalif)
 end
 
@@ -130,19 +130,21 @@ mutable struct Poblacion{T<:Genoma}
     end
 end
 
-function rouletteselector(pob::Array{T}, n::Int64) where T<:Genoma
+function rouletteselector(pob::Array{T}, n::Int64, rng::MersenneTwister) where T<:Genoma
     f=x->x.calif; w=f.(pob)
     W=FrequencyWeights(-w.+(maximum(w)+1))
-    sample(pob, W, n; replace=false)
+    sample(rng, pob, W, n; replace=false)
 end
 
 function reproduce(p::Poblacion{T}) where T<:GenomaEntero2Hijos
     n=length(p.pob)
     pob=Array{T}(undef, n)
     m=n-p.keepbest-p.random
-    for i in 1:ceil(Int,m/2)
-        s=rouletteselector(p.pob, 2)
-        c=crossover(s[1], s[2], p.rng, p.funCalif, p.Pm)
+    seeds=sample(p.rng, Vector(1:1000), ceil(Int,m/2))
+    Threads.@threads for i in 1:ceil(Int,m/2)
+        rng=MersenneTwister(seeds[i])
+        s=rouletteselector(p.pob, 2, rng)
+        c=crossover(s[1], s[2], rng, p.funCalif, p.Pm)
         #(p1::OX, p2::OX, rng::MersenneTwister, funCalif::Function, Pm::Float64)
         pob[2*i-1]=c[1]
         if 2*i<=m
@@ -167,18 +169,6 @@ function getbest(pob::Poblacion)
     return pob.pob[findfirst(isequal(minimum(f,pob.pob)),f.(pob.pob))]
 end
 
-function calif(pnt)
-    n = length(pnt)
-    #print(n)
-    cost = 0;
-    for p in 1:n-1
-        cost += _mtz1[pnt[p], pnt[p+1]]
-    end
-    cost += _mtz1[pnt[1], pnt[n]]
-end
-#p=Poblacion{PMX}(10, 1, 6, calif; seed=1)
-
-
 function algoritmoGenetico(funCalif::Function, tipo, pobsize, generations; Pm=0.01, intStart=0, intEnd=0, binlen=10, seed=1234, keepbest=true,random=2)
     if tipo=="PMX"
         pob=Poblacion{PMX}(pobsize, intStart, intEnd, funCalif)#; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
@@ -188,47 +178,9 @@ function algoritmoGenetico(funCalif::Function, tipo, pobsize, generations; Pm=0.
     end
 
     for i in 2:generations
-        println(i,getbest(pob))
+        #println(i,getbest(pob))
         pob=reproduce(pob)
     end
     res=getbest(pob)
     return res.calif, res.genoma
 end
-
-## Lee Datos
-
-data = datos("Data1.txt")
-
-# AGUASSS!!!!!!!!!!!!!!!!!  Lee abajo
-
-## Tienen que cambiar _mtz1 por _mtz2 en la funcion calif para poder correr el
-# set de datos
-# Julia no te deja redefinir globales entonces creamos una por dataset.
-
-### ----------------------  Para data 1 ------------------------
-global const _mtz1 = data[1]
-### ----------------------  Para data 2 ------------------------
-#global const _mtz2 = data[1]
-
-
-
-
-califFinal, genomaFinal = algoritmoGenetico(calif, "OX", 40, 1000; intStart=1, intEnd=floor(Int,length(data[2])/2), random=5)
-califFinal, genomaFinal = algoritmoGenetico(calif, "PMX", 40, 10000; intStart=1, intEnd=131)
-
-## Graficamos problema y sol.
-
-x = data[2][1:floor(Int,length(data[2])/2)]
-y = data[2][floor(Int,length(data[2])/2+1):length(data[2])]
-
-plot(x, y, seriestype = :scatter, title = "Ciudades, costo = "*string( califFinal), size=(1000,1000))
-
-# Construimos ruta
-orden = Array{Tuple{Int, Int}}(undef, length(x))
-for num in 1:length(x)
-    orden[num] = (data[2][genomaFinal[num],1] , data[2][genomaFinal[num],2])
-end
-
-# Ponemos Ruta
-beam = Shape(orden)
-plot!(beam, fillcolor = plot_color(:yellow, 0.3), fillalpha=0.0, alpha=0.2)
