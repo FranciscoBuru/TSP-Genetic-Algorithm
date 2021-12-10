@@ -101,10 +101,10 @@ function reporteHeatmap(tipo, directorio, n_exprimentos_pob, pob_bajo, pob_alto,
     paso_Pm=(Pm_alto-Pm_bajo)/(n_exprimentos_Pm-1)
     pms=Vector(Pm_bajo:paso_Pm:Pm_alto)
     k=1
-    Threads.@threads for i in 1:n_exprimentos_pob
+    for i in 1:n_exprimentos_pob
         pobsize=pobs[i]
         n_gen=ceil(Int, numEval/(pobsize-1))
-        Threads.@threads for j in 1:n_exprimentos_Pm
+        for j in 1:n_exprimentos_Pm
             Pm=pms[j]
             p, califFinal, genomaFinal = algoritmoGeneticoReporte(calif, tipo, pobsize, n_gen; intStart=1, intEnd=size(mtz, 1), random=random, Pm=Pm)
             res[i,j]=p[end,1]
