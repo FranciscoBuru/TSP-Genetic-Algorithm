@@ -103,12 +103,12 @@ end
 mutable struct CX<:GenomaEntero2Hijos
     genoma::Array{Int64}
     calif::Int64
-    function OX(starter::Int64, ender::Int64, rng::MersenneTwister, funCalif::Function)
+    function CX(starter::Int64, ender::Int64, rng::MersenneTwister, funCalif::Function)
         genoma=shuffle(rng, Vector(starter:ender))
         calif=funCalif(genoma)
         new(genoma, calif)
     end
-    function OX(genoma::Array{Int64}, funCalif::Function)
+    function CX(genoma::Array{Int64}, funCalif::Function)
         new(genoma, funCalif(genoma))
     end
 end
@@ -235,6 +235,7 @@ function algoritmoGenetico(funCalif::Function, tipo, pobsize, generations; Pm=0.
     elseif tipo=="OX"
         pob=Poblacion{OX}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
     elseif tipo=="CX"
+        println("Dentro")
         pob=Poblacion{CX}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
     end
 
