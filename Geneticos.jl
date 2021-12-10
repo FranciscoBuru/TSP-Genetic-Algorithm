@@ -26,7 +26,7 @@ end
 
 function mutar!(x::Array{Int64}, Pm::Float64, rng::MersenneTwister)
     n=length(x)
-    n_mutaciones=rand(rng, Binomial(n,Pm))
+    n_mutaciones=rand(rng, Binomial(floor(Int, n/2),Pm))
     for i in 1:n_mutaciones
         j=sample(Vector(1:n), 2; replace=false)
         x[j[1]],x[j[2]]=x[j[2]],x[j[1]]
