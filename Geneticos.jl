@@ -26,7 +26,7 @@ end
 
 function mutar!(x::Array{Int64}, Pm::Float64, rng::MersenneTwister)
     n=length(x)
-    n_mutaciones=rand(rng, Binomial(floor(Int, n/2),Pm))
+    n_mutaciones=rand(rng, Binomial(n,Pm/2))
     for i in 1:n_mutaciones
         j=sample(Vector(1:n), 2; replace=false)
         x[j[1]],x[j[2]]=x[j[2]],x[j[1]]
@@ -230,5 +230,5 @@ function algoritmoGeneticoReporte(funCalif::Function, tipo, pobsize, generations
     ylabel!(p, "Puntaje")
     xlabel!(p, "Generación")
     plot!(p)
-    return valores[:,1], res.calif, res.genoma
+    return valores, res.calif, res.genoma
 end
