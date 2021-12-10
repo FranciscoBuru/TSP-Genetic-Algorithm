@@ -14,7 +14,6 @@ struct datos
     end
 end
 
-
 function start(num)
     return shuffle(MersenneTwister(1234), Vector(1:num))
 end
