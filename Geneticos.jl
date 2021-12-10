@@ -132,8 +132,6 @@ function crossover(p1::CX, p2::CX, rng::MersenneTwister, funCalif::Function, Pm:
         val = p1.genoma[findfirst(x->x==val, p2.genoma)]
     end
 
-
-
     #Mutamos
     #mutar!(x, Pm, rng); mutar!(y, Pm, rng)
     return CX(y,funCalif), CX(x,funCalif)
