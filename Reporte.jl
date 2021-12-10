@@ -127,7 +127,7 @@ function reporteHeatmap(tipo, directorio, n_exprimentos_pob, pob_bajo, pob_alto,
     p=heatmap(pobs, pms, res,
     c=cgrad([:blue, :white,:red, :yellow]),
         ylabel="Pm", xlabel="Tamaño de la poblacion",
-        title="Modificacion de hiper parametros")
+        title="Modificacion de hiper parametros en "* tipo)
     return res, p
 end
 
