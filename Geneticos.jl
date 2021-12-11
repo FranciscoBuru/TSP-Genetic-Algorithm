@@ -26,11 +26,9 @@ end
 
 function mutar!(x::Array{Int64}, Pm::Float64, rng::MersenneTwister)
     n=length(x)
-    n_mutaciones=rand(rng, Binomial(n,Pm/2))
-    for i in 1:n_mutaciones
-        j=sample(Vector(1:n), 2; replace=false)
-        x[j[1]],x[j[2]]=x[j[2]],x[j[1]]
-    end
+    n_mutaciones=rand(rng, Binomial(n,Pm))
+    mutados=sample(rng, 1:n, n_mutaciones; replace=false)
+    x[mutados]=x[shuffle(rng, mutados)]
 end
 
 mutable struct PMX<:GenomaEntero2Hijos
