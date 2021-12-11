@@ -87,7 +87,6 @@ plot(res2[2])
 
 
 function reporteHeatmap(tipo, directorio, n_exprimentos_pob, pob_bajo, pob_alto, numEval, Pm_bajo, Pm_alto, n_exprimentos_Pm, random)
-    lk=ReentrantLock();
     data=datos(directorio)
     mtz=data.dist
     calif=x->costoRuta(x, mtz)
@@ -105,19 +104,17 @@ function reporteHeatmap(tipo, directorio, n_exprimentos_pob, pob_bajo, pob_alto,
     pms=Vector(Pm_bajo:paso_Pm:Pm_alto)
     k=1
     for i in 1:n_exprimentos_pob
-        pobsize=pobs[i]
+        pobsize=pobs[i]+random
         n_gen=ceil(Int, numEval/(pobsize-1))
         for j in 1:n_exprimentos_Pm
             Pm=pms[j]
             p, califFinal, genomaFinal = algoritmoGeneticoReporte(calif, tipo, pobsize, n_gen; intStart=1, intEnd=size(mtz, 1), random=random, Pm=Pm)
             res[i,j]=p[end,1]
-            lock(lk) do
-                if best>res[i,j]
-                    best=res[i,j]
-                    print("pobsize:",pobsize, ", Pm:",Pm, ", new best:",best,", ")
-                    if k%10!=0
-                        println("i:",i,", j:",j,", k:",k)
-                    end
+            if best>res[i,j]
+                best=res[i,j]
+                print("pobsize:",pobsize, ", Pm:",Pm, ", new best:",best,", ")
+                if k%10!=0
+                    println("i:",i,", j:",j,", k:",k)
                 end
             end
             if k%10==0
