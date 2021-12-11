@@ -5,10 +5,6 @@ using Distributions
 using Plots
 
 abstract type Genoma end
-abstract type GenomaEntero<:Genoma end
-abstract type GenomaBinario<:Genoma end
-abstract type GenomaEntero2Hijos<:GenomaEntero end
-abstract type GenomaEntero1Hijo<:GenomaEntero end
 
 function corregir!(x::Array{Int64}, y::Array{Int64})
     n=length(x)
@@ -31,7 +27,7 @@ function mutar!(x::Array{Int64}, Pm::Float64, rng::MersenneTwister)
     x[mutados]=x[shuffle(rng, mutados)]
 end
 
-mutable struct PMX<:GenomaEntero2Hijos
+mutable struct PMX<:Genoma
     genoma::Array{Int64}
     calif::Int64
 
@@ -60,7 +56,7 @@ function crossover(p1::PMX, p2::PMX, rng::MersenneTwister, funCalif::Function, P
     return PMX(x,funCalif), PMX(y,funCalif)
 end
 
-mutable struct OX<:GenomaEntero2Hijos
+mutable struct OX<:Genoma
     genoma::Array{Int64}
     calif::Int64
     function OX(starter::Int64, ender::Int64, rng::MersenneTwister, funCalif::Function)
@@ -98,7 +94,7 @@ end
 
 
 # Ini CX
-mutable struct CX<:GenomaEntero2Hijos
+mutable struct CX<:Genoma
     genoma::Array{Int64}
     calif::Int64
     function CX(starter::Int64, ender::Int64, rng::MersenneTwister, funCalif::Function)
@@ -139,7 +135,7 @@ end
 
 
 
-mutable struct GenAleatorio<:GenomaEntero2Hijos
+mutable struct GenAleatorio<:Genoma
     genoma::Array{Int64}
     calif::Int64
     starter::Int64
@@ -164,20 +160,11 @@ mutable struct Poblacion{T<:Genoma}
     random::Int64 #Numero de genomas que se inicializan al azar cada vuelta
     Pm::Float64 #Probabilidad de mutacion
     #Constructor entero
-    function Poblacion{T}(n::Int64, starter::Int64, ending::Int64, funCalif::Function; keepbest::Bool=true, random::Int64=2, Pm::Float64=0.05, seed::Int64=1234) where T<:GenomaEntero
+    function Poblacion{T}(n::Int64, starter::Int64, ending::Int64, funCalif::Function; keepbest::Bool=true, random::Int64=2, Pm::Float64=0.05, seed::Int64=1234) where T<:Genoma
         rng=MersenneTwister(seed)
         pob=Array{T}(undef, n)
         for i in 1:n
             pob[i]=T(starter, ending, rng, funCalif)
-        end
-        new{T}(pob, rng, funCalif, keepbest, random, Pm)
-    end
-    #Constructor binario
-    function Poblacion{T}(n::Int64, len::Int64, funCalif::Function; keepbest::Bool=true, random::Int64=2, Pm::Float64=0.05, seed::Int64=1234) where T<:GenomaBinario
-        rng=MersenneTwister(seed)
-        pob=Array{T}(undef, n)
-        for i in 1:n
-            pob[i]=T(len, funCalif)
         end
         new{T}(pob, rng, funCalif, keepbest, random, Pm)
     end
@@ -193,7 +180,7 @@ function rouletteselector(pob::Array{T}, n::Int64, rng::MersenneTwister) where T
     sample(rng, pob, W, n; replace=false)
 end
 
-function reproduce(p::Poblacion{T}) where T<:GenomaEntero2Hijos
+function reproduce(p::Poblacion{T}) where T<:Genoma
     n=length(p.pob)
     pob=Array{T}(undef, n)
     m=n-p.keepbest-p.random
@@ -282,5 +269,5 @@ function algoritmoGeneticoReporte(funCalif::Function, tipo, pobsize, generations
     ylabel!(p, "Puntaje")
     xlabel!(p, "Generación")
     plot!(p)
-    return valores, res.calif, res.genoma
+    return valores, res.calif, res.genoma, p
 end
