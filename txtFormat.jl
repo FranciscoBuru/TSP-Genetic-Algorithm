@@ -60,7 +60,7 @@ function graficar(startPoint::Array{Int64}, solucion::Array{Int64}, califFinal::
     x = startPoint[1:floor(Int,length(startPoint)/2)]
     y = startPoint[floor(Int,length(startPoint)/2+1):length(startPoint)]
 
-    plot(x, y, seriestype = :scatter, title = "Ciudades, costo = "*string( califFinal), size=(1000,1000))
+    p=plot(x, y, seriestype = :scatter, title = "Ciudades, costo = "*string( califFinal), size=(1000,1000))
 
     # Construimos ruta
     orden = Array{Tuple{Int, Int}}(undef, length(x))
@@ -70,5 +70,6 @@ function graficar(startPoint::Array{Int64}, solucion::Array{Int64}, califFinal::
 
     # Ponemos Ruta
     beam = Shape(orden)
-    plot!(beam, fillcolor = plot_color(:yellow, 0.3), fillalpha=0.0, alpha=0.2)
+    plot!(p, beam, fillcolor = plot_color(:yellow, 0.3), fillalpha=0.0, alpha=0.2)
+    return p
 end

@@ -99,7 +99,6 @@ function reporteHeatmap(tipo, directorio, n_exprimentos_pob, pob_bajo, pob_alto,
 
     paso_pob=(pob_alto-pob_bajo)/(n_exprimentos_pob-1)
     pobs=floor.(Int64, Vector(pob_bajo:paso_pob:pob_alto))
-
     paso_Pm=(Pm_alto-Pm_bajo)/(n_exprimentos_Pm-1)
     pms=Vector(Pm_bajo:paso_Pm:Pm_alto)
     k=1
