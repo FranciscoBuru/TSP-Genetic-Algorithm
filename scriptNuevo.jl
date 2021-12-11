@@ -19,7 +19,7 @@ pms=[Pm_OX; Pm_CX; Pm_PMX]
 pobs=[pob_OX; pob_CX; pob_PMX]
 
 #generaciones=[1000; 10000; 100000; 1000000]
-#generaciones=[10]
+generaciones=[10, 100]
 graficas=Array{Plots.Plot}(undef, 3)
 graficas2=Array{Plots.Plot}(undef, 3)
 
