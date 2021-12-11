@@ -112,6 +112,8 @@ function reporteHeatmap(tipo, directorio, n_exprimentos_pob, pob_bajo, pob_alto,
             res[i,j]=p[end,1]
             if best>res[i,j]
                 best=res[i,j]
+                Pm_best=Pm
+                pob_best=pobsize
                 print("pobsize:",pobsize, ", Pm:",Pm, ", new best:",best,", ")
                 if k%10!=0
                     println("i:",i,", j:",j,", k:",k)
@@ -128,7 +130,7 @@ function reporteHeatmap(tipo, directorio, n_exprimentos_pob, pob_bajo, pob_alto,
     c=cgrad([:blue, :white,:red, :yellow]),
         ylabel="Pm", xlabel="Tamaño de la poblacion",
         title="Modificacion de hiper parametros en "* tipo)
-    return res, p
+    return res, p, Pm_best, pob_best
 end
 
 
@@ -144,7 +146,8 @@ Pm_alto=0.1
 n_exprimentos_Pm=11
 
 
-res3=reporteHeatmap(tipo, directorio, n_exprimentos_pob, pob_bajo, pob_alto, numEval, Pm_bajo, Pm_alto, n_exprimentos_Pm, random)
+tipos=["OX", "PMX", "CX"]
+res3=reporteHeatmap(tipos[1], directorio, n_exprimentos_pob, pob_bajo, pob_alto, numEval, Pm_bajo, Pm_alto, n_exprimentos_Pm, random)
 plot(res3[2])
 
 savefig(res3[2], "CX-40000-2.png")

@@ -261,7 +261,11 @@ function algoritmoGeneticoReporte(funCalif::Function, tipo, pobsize, generations
         pob=Poblacion{CX}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
     elseif tipo=="Aleatorio"
         pob=Poblacion{GenAleatorio}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
+    elseif tipo=="CX"
+        # println("Dentro")
+        pob=Poblacion{CX}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
     end
+
     f=x->x.calif
 
     valores=Array{Int64}(undef, generations, pobsize)
