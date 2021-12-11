@@ -132,13 +132,13 @@ function reporteHeatmap(tipo, directorio, n_exprimentos_pob, pob_bajo, pob_alto,
 end
 
 
-tipo="OX"
-numEval=10000
+tipo="CX"
+numEval=40000
 directorio= "Data1.txt"
 n_exprimentos_pob=20
 pob_bajo=5
 pob_alto=100
-random=0
+random=2
 Pm_bajo=0.0
 Pm_alto=0.1
 n_exprimentos_Pm=11
@@ -146,3 +146,5 @@ n_exprimentos_Pm=11
 
 res3=reporteHeatmap(tipo, directorio, n_exprimentos_pob, pob_bajo, pob_alto, numEval, Pm_bajo, Pm_alto, n_exprimentos_Pm, random)
 plot(res3[2])
+
+savefig(res3[2], "CX-40000-2.png")
