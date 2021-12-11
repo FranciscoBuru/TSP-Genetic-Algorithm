@@ -257,6 +257,8 @@ function algoritmoGeneticoReporte(funCalif::Function, tipo, pobsize, generations
         #Poblacion{T}(n::Int64, starter::Int64, ending::Int64, funCalif::Function; keepbest::Bool=true, random::Int64=2, Pm::Float64=0.05, seed::Int64=1234)
     elseif tipo=="OX"
         pob=Poblacion{OX}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
+    elseif tipo=="CX"
+        pob=Poblacion{CX}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
     elseif tipo=="Aleatorio"
         pob=Poblacion{GenAleatorio}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
     elseif tipo=="CX"
