@@ -134,7 +134,7 @@ function reporteHeatmap(tipo, directorio, n_exprimentos_pob, pob_bajo, pob_alto,
 end
 
 
-tipo="CX"
+
 numEval=40000
 directorio= "Data1.txt"
 n_exprimentos_pob=20
@@ -145,9 +145,36 @@ Pm_bajo=0.0
 Pm_alto=0.1
 n_exprimentos_Pm=11
 
-
+random=2
 tipos=["OX", "PMX", "CX"]
 res3=reporteHeatmap(tipos[1], directorio, n_exprimentos_pob, pob_bajo, pob_alto, numEval, Pm_bajo, Pm_alto, n_exprimentos_Pm, random)
 plot(res3[2])
 
-savefig(res3[2], "CX-40000-2.png")
+savefig(res3[2], "OX-D2-40000-2.png")
+
+res3=reporteHeatmap(tipos[2], directorio, n_exprimentos_pob, pob_bajo, pob_alto, numEval, Pm_bajo, Pm_alto, n_exprimentos_Pm, random)
+plot(res3[2])
+
+savefig(res3[2], "PMX-D2-40000-2.png")
+
+res3=reporteHeatmap(tipos[3], directorio, n_exprimentos_pob, pob_bajo, pob_alto, numEval, Pm_bajo, Pm_alto, n_exprimentos_Pm, random)
+plot(res3[2])
+
+savefig(res3[2], "CX-D2-40000-2.png")
+
+random=0
+
+res3=reporteHeatmap(tipos[1], directorio, n_exprimentos_pob, pob_bajo, pob_alto, numEval, Pm_bajo, Pm_alto, n_exprimentos_Pm, random)
+plot(res3[2])
+
+savefig(res3[2], "OX-D2-40000-0.png")
+
+res3=reporteHeatmap(tipos[2], directorio, n_exprimentos_pob, pob_bajo, pob_alto, numEval, Pm_bajo, Pm_alto, n_exprimentos_Pm, random)
+plot(res3[2])
+
+savefig(res3[2], "PMX-D2-40000-0.png")
+
+res3=reporteHeatmap(tipos[3], directorio, n_exprimentos_pob, pob_bajo, pob_alto, numEval, Pm_bajo, Pm_alto, n_exprimentos_Pm, random)
+plot(res3[2])
+
+savefig(res3[2], "CX-D2-40000-0.png")

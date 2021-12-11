@@ -7,7 +7,7 @@ PMX:
 pobsize:7, Pm:0.0, new best:2311
 
 OX:
-pobsize:7, Pm:0.0, new best:3119
+pobsize:7, Pm:0.01, new best:1630,
 
 CX:
 pobsize:7, Pm:0.0, new best:3119,

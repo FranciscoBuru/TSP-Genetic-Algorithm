@@ -282,5 +282,5 @@ function algoritmoGeneticoReporte(funCalif::Function, tipo, pobsize, generations
     ylabel!(p, "Puntaje")
     xlabel!(p, "Generación")
     plot!(p)
-    return valores, res.calif, res.genoma
+    return valores, res.calif, res.genoma, p
 end
