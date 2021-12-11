@@ -7,8 +7,11 @@ mtz=data.dist
 
 calif=x->costoRuta(x, mtz)
 
-califFinal, genomaFinal = algoritmoGenetico(calif, "OX", 100, 1000000; intStart=1, intEnd=floor(Int,length(data.startPoint)/2), random=5)
-
+genes = 1000000
+println(genes)
+ini = time_ns()
+califFinal, genomaFinal = algoritmoGenetico(calif, "CX", 100, genes; intStart=1, intEnd=floor(Int,length(data.startPoint)/2), random=5)
+print((time_ns() - ini )/ 1e9)
 graficar(data.startPoint, genomaFinal, califFinal)
 
 #califFinal, genomaFinal = algoritmoGenetico(calif, "PMX", 40, 10000; intStart=1, intEnd=131)
@@ -26,4 +29,3 @@ println(califFinal)
 plot!()
 gen=Vector(1:10)
 graficar(data.startPoint, genomaFinal, califFinal)
-

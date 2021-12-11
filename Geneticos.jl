@@ -233,14 +233,14 @@ function algoritmoGenetico(funCalif::Function, tipo, pobsize, generations; Pm=0.
     elseif tipo=="OX"
         pob=Poblacion{OX}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
     elseif tipo=="CX"
-        println("Dentro")
+        # println("Dentro")
         pob=Poblacion{CX}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
     end
 
     for i in 2:generations
         #println(i,getbest(pob))
         pob=reproduce(pob)
-        println(i)
+        #println(i)
     end
     res=getbest(pob)
     return res.calif, res.genoma
