@@ -56,7 +56,7 @@ function crossover(p1::PMX, p2::PMX, rng::MersenneTwister, funCalif::Function, P
     y[i[2]:n],x[i[2]:n]=x[i[2]:n],y[i[2]:n]
     #corregir las cadenas
     corregir!(x,y)
-    mutar!(rng, x, Pm); mutar!(y, Pm, rng)
+    mutar!(x, Pm, rng); mutar!(y, Pm, rng)
     return PMX(x,funCalif), PMX(y,funCalif)
 end
 
@@ -257,6 +257,8 @@ function algoritmoGeneticoReporte(funCalif::Function, tipo, pobsize, generations
         #Poblacion{T}(n::Int64, starter::Int64, ending::Int64, funCalif::Function; keepbest::Bool=true, random::Int64=2, Pm::Float64=0.05, seed::Int64=1234)
     elseif tipo=="OX"
         pob=Poblacion{OX}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
+    elseif tipo=="CX"
+        pob=Poblacion{CX}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
     elseif tipo=="Aleatorio"
         pob=Poblacion{GenAleatorio}(pobsize, intStart, intEnd, funCalif; keepbest=keepbest, random=random, Pm=Pm, seed=seed)
     end
